@@ -16,7 +16,9 @@ const userSchema = new Schema({
 
 // On save Hook, encrypt password
 
-//Before saving a model, run this function 'userSchema.pre'
+// Before saving a model, run this function 'userSchema.pre'.
+// Had to use the 'function' syntax instead of the arrow syntax.
+// The hashed password was not being saved when using arrow functions.
 userSchema.pre('save', function (next) {
     // get access to the user model
     const user = this;
@@ -39,6 +41,16 @@ userSchema.pre('save', function (next) {
         })
     })
 })
+
+// Method for comparing password, during the user login
+userSchema.methods.comparePassword = function(candidatePassword, callback) {
+    bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+        if (err) {
+            return callback(err)
+        }
+        callback(null, isMatch);
+    })
+}
 
 // Create the model class
 const ModelClass = mongoose.model('user', userSchema);

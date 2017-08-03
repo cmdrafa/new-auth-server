@@ -8,6 +8,13 @@ function tokenForUser(user) {
         sub: user.id,
         iat: timestamp
     }, config.secret);
+
+}
+
+exports.signin = (req, res, next) => {
+    // User has already had their eamil and pass auth'd, just give the token
+    // Passport local strategy has returned user as req.user
+    res.send({ token: tokenForUser(req.user) })
 }
 
 exports.signup = (req, res, next) => {
